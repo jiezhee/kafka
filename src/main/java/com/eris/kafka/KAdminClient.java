@@ -10,7 +10,7 @@ import java.util.concurrent.ExecutionException;
 public class KAdminClient {
 
     private static final String BROKER_LIST = "localhost:9092";
-    private static final String TOPIC = "TOPIC-A";
+    private static final String TOPIC = "TOPIC-B";
 
 
     /**
@@ -74,13 +74,15 @@ public class KAdminClient {
         AdminClient adminClient = AdminClient.create(properties);
 
         // 1，创建topic
-//        createTopic(adminClient);
+        createTopic(adminClient);
 
-        // 2，查看所有topic
-//        describeTopic(adminClient);
+        // 2，添加分区
+        addPartition(adminClient);
 
         // 3，查看所有topic
-        addPartition(adminClient);
+        describeTopic(adminClient);
+
+
 
         adminClient.close();
 

@@ -1,5 +1,7 @@
 package com.eris.kafka;
 
+import com.alibaba.fastjson.JSON;
+import com.eris.kafka.util.LogUtil;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -11,7 +13,8 @@ import java.util.concurrent.ExecutionException;
 public class Producer {
 
     private static final String BROKER_LIST = "localhost:9092";
-    private static final String TOPIC = "TOPIC-A";
+    private static final String TOPIC_A = "TOPIC-A";
+    private static final String TOPIC_B = "TOPIC-B";
 
 
     public static Properties initConfig() {
@@ -32,18 +35,18 @@ public class Producer {
         properties.put(ProducerConfig.ACKS_CONFIG, "1");
 
         // 生产者客户端能发送的消息的最大值，单位为B，默认1M
-        properties.put(ProducerConfig.MAX_REQUEST_SIZE_CONFIG,  1048576);
+        properties.put(ProducerConfig.MAX_REQUEST_SIZE_CONFIG, 1048576);
 
         // Producer等待请求响应的最长时间，单位ms，默认值为30000
-        properties.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG,  30000);
+        properties.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, 30000);
 
         // 生产者发送ProducerBatch之前等待更多ProducerRecord加入的时间。默认为0，ProducerBatch被填满时发出
-        properties.put(ProducerConfig.LINGER_MS_CONFIG,  0);
+        properties.put(ProducerConfig.LINGER_MS_CONFIG, 0);
         return properties;
     }
 
     public static ProducerRecord<String, String> initMessage() {
-        return new ProducerRecord<>(TOPIC, "hi eris");
+        return new ProducerRecord<>(TOPIC_A, "key", "hi eris again 3");
     }
 
     public static void main(String[] args) {
@@ -53,7 +56,8 @@ public class Producer {
         ProducerRecord record = initMessage();
 
         try {
-            kafkaProducer.send(record).get();
+            Object result = kafkaProducer.send(record).get();
+            LogUtil.printWithPrefix("send result:" + JSON.toJSONString(result));
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
